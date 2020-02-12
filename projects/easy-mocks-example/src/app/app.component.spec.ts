@@ -1,8 +1,15 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { ComponentTest } from 'ng-easy-mocks';
+
+@ComponentTest(AppComponent)
+class AppComponentSpec {
+
+}
 
 describe('AppComponent', () => {
+  const tc = new AppComponentSpec();
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [

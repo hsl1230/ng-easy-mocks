@@ -5,3 +5,4 @@
 export * from './lib/ng-easy-mocks.service';
 export * from './lib/ng-easy-mocks.component';
 export * from './lib/ng-easy-mocks.module';
+export * from './lib/mock-utils';
