@@ -17,7 +17,13 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ng-easy-mocks": [
+        "dist/ng-easy-mocks/ng-easy-mocks",
+        "dist/ng-easy-mocks"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
