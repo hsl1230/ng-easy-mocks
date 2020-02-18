@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NgEasyMocksService } from './ng-easy-mocks.service';
+import { TitleService } from './title.service';
 
-describe('NgEasyMocksService', () => {
-  let service: NgEasyMocksService;
+describe('TitleService', () => {
+  let service: TitleService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(NgEasyMocksService);
+    service = TestBed.inject(TitleService);
   });
 
   it('should be created', () => {

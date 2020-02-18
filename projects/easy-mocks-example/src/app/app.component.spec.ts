@@ -1,42 +1,34 @@
-import { TestBed, async } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { TitleService } from './title.service';
 import { AppComponent } from './app.component';
-import { ComponentTest } from 'ng-easy-mocks';
+import { ComponentTest, MockService, TestSpec } from 'ng-easy-mocks';
+import { when, verify } from 'ts-mockito';
 
 @ComponentTest(AppComponent)
-class AppComponentSpec {
-
+class AppComponentSpec extends TestSpec<AppComponent> {
+  @MockService(TitleService)
+  mockTitleServide(stub: TitleService) {
+    when(stub.genTitle()).thenReturn('hello');
+  }
 }
 
 describe('AppComponent', () => {
   const tc = new AppComponentSpec();
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
-  }));
+  tc.setup();
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(tc.component).toBeTruthy();
   });
 
-  it(`should have as title 'easy-mocks-example'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('easy-mocks-example');
+  it(`should have as title 'hello'`, () => {
+    expect(tc.component.title).toEqual('hello');
   });
 
   it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('easy-mocks-example app is running!');
+    const compiled = tc.fixture.nativeElement;
+    expect(compiled.querySelector('.content span').textContent).toContain('hello app is running!');
+  });
+
+  it('should call title service', () => {
+    verify(tc.mock(TitleService).genTitle()).called();
   });
 });

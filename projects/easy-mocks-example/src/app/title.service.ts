@@ -3,7 +3,11 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class NgEasyMocksService {
+export class TitleService {
 
   constructor() { }
+
+  genTitle() {
+    return 'easy-mocks-example';
+  }
 }
