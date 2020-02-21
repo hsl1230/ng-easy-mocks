@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
-
 import { TitleService } from './title.service';
+import { ServiceTestSpec } from 'ng-easy-mocks';
+import { ServiceTest } from 'projects/ng-easy-mocks/src/public-api';
+
+@ServiceTest(TitleService)
+class TitleServiceSpec extends ServiceTestSpec<TitleService> {
+}
 
 describe('TitleService', () => {
-  let service: TitleService;
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(TitleService);
-  });
+  const ts = new TitleServiceSpec();
+  ts.setup();
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(ts.service).toBeTruthy();
   });
 });

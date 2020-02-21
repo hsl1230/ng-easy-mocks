@@ -1,10 +1,10 @@
 import { TitleService } from './title.service';
 import { AppComponent } from './app.component';
-import { ComponentTest, MockService, TestSpec } from 'ng-easy-mocks';
+import { ComponentTest, MockService, ComponentTestSpec } from 'ng-easy-mocks';
 import { when, verify } from 'ts-mockito';
 
 @ComponentTest(AppComponent)
-class AppComponentSpec extends TestSpec<AppComponent> {
+class AppComponentSpec extends ComponentTestSpec<AppComponent> {
   @MockService(TitleService)
   mockTitleServide(stub: TitleService) {
     when(stub.genTitle()).thenReturn('hello');
@@ -24,11 +24,19 @@ describe('AppComponent', () => {
   });
 
   it('should render title', () => {
-    const compiled = tc.fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('hello app is running!');
+    expect(tc.$('.content').$all('span')[0].textContent).toContain('hello app is running!');
+    expect(tc.$('.content').$('span').textContent).toContain('hello app is running!');
+    expect(tc.$('.content span').textContent).toContain('hello app is running!');
+    expect(tc.$('.content', 'span').textContent).toContain('hello app is running!');
   });
 
   it('should call title service', () => {
     verify(tc.mock(TitleService).genTitle()).called();
+  });
+
+  it(`should have as title 'refresh'`, () => {
+    when(tc.mock(TitleService).genTitle()).thenReturn('refresh');
+    tc.component.ngOnInit();
+    expect(tc.component.title).toEqual('refresh');
   });
 });
