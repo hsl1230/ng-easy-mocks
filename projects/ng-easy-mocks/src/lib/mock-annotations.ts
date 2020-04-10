@@ -3,13 +3,18 @@ import 'reflect-metadata';
 import { MockComponent } from 'ng-mocks';
 import { Type } from '@angular/core';
 import { mock, instance } from 'ts-mockito';
+import { ComponentTestSpec } from './component-test-spec';
+import { TestHostComponent } from './test-host.component';
+import { ServiceTestSpec } from './service-test-spec';
 
-export function ComponentTest<T>(metadata: Type<T>) {
+export function ComponentTest<T>(metadata: Type<T>, parentComponent?: Type<TestHostComponent<T>>) {
   return (target: any) => { // class constructor
     target.prototype.ngOnDestroy = () => {
       Reflect.deleteMetadata(MetadataConstants.ENTRY_COMPONENT_TYPE_METADATA, target);
+      Reflect.deleteMetadata(MetadataConstants.PARENT_COMPONENT_TYPE_METADATA, target);
     };
     Reflect.defineMetadata(MetadataConstants.ENTRY_COMPONENT_TYPE_METADATA, metadata, target);
+    Reflect.defineMetadata(MetadataConstants.PARENT_COMPONENT_TYPE_METADATA, parentComponent, target);
   };
 }
 
@@ -99,7 +104,7 @@ function createStub<T>(serviceType: (new (...args: any[]) => T) | (Function & {
   });
 }
 
-export function createModuleConfig(target: any): any {
+export function createModuleConfig<T>(target: any): any {
   let imports = Reflect.getMetadata(MetadataConstants.IMPORTS_METADATA, target.constructor) || [];
   let declarations = Reflect.getMetadata(MetadataConstants.DECLARATIONS_METADATA, target.constructor) || [];
   let providers = Reflect.getMetadata(MetadataConstants.PROVIDERS_METADATA, target.constructor) || [];
@@ -108,7 +113,12 @@ export function createModuleConfig(target: any): any {
   providers = Object.assign([], providers);
   imports = Object.assign([], imports);
 
-  declarations.push(target.componentType);
+  if (target.componentType) {
+    declarations.push(target.componentType);
+  }
+  if (target.parentComponentType) {
+    declarations.push(target.parentComponentType);
+  }
 
   const mockComponents = Reflect.getMetadata(MetadataConstants.MOCK_COMPONENTS_METADATA, target.constructor);
   if (mockComponents) {

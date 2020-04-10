@@ -1,4 +1,5 @@
 export enum MetadataConstants {
+  PARENT_COMPONENT_TYPE_METADATA = 'test:parentComponentType',
   ENTRY_COMPONENT_TYPE_METADATA = 'test:entryComponentType',
   ENTRY_SERVICE_TYPE_METADATA = 'test:entryServiceType',
   MOCK_COMPONENTS_METADATA = 'test:mockComponents',

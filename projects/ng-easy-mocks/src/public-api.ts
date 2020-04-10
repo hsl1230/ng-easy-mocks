@@ -1,3 +1,4 @@
+import { TestHostComponent } from './lib/test-host.component';
 /*
  * Public API Surface of ng-easy-mocks
  */
@@ -14,3 +15,4 @@ export {
 
 export { ComponentTestSpec } from './lib/component-test-spec';
 export { ServiceTestSpec } from './lib/service-test-spec';
+export { TestHostComponent } from './lib/test-host.component';

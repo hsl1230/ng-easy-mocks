@@ -1,3 +1,4 @@
+import { TestHostComponent } from './test-host.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { Type, InjectionToken, InjectFlags, DebugElement } from '@angular/core';
@@ -14,8 +15,10 @@ export interface SuperDebugElement extends DebugElement {
 
 export abstract class ComponentTestSpec<T> {
   component: T;
-  fixture: ComponentFixture<T>;
+  parentComponent: TestHostComponent<T>;
+  fixture: ComponentFixture<T> | ComponentFixture<TestHostComponent<T>>;
   componentType: Type<T>;
+  parentComponentType: Type<TestHostComponent<T>>;
 
   setup(init?: (this: void) => void) {
     if (!DebugElement.prototype.$) {
@@ -39,6 +42,7 @@ export abstract class ComponentTestSpec<T> {
     }
 
     this.componentType = Reflect.getMetadata(MetadataConstants.ENTRY_COMPONENT_TYPE_METADATA, this.constructor);
+    this.parentComponentType = Reflect.getMetadata(MetadataConstants.PARENT_COMPONENT_TYPE_METADATA, this.constructor);
 
     const globalModuleConfig = createModuleConfig(this);
 
@@ -65,12 +69,22 @@ export abstract class ComponentTestSpec<T> {
 
       TestBed.configureTestingModule(localModuleConfig).compileComponents();
 
-      this.fixture = TestBed.createComponent(this.componentType);
-      this.component = this.fixture.componentInstance;
-      if (init) {
-        init();
+      if (this.parentComponentType) {
+        this.fixture = TestBed.createComponent(this.parentComponentType);
+        this.parentComponent = this.fixture.componentInstance;
+        if (init) {
+          init();
+        }
+        this.fixture.detectChanges();
+        this.component = this.parentComponent.testComponent;
+      } else {
+        this.fixture = TestBed.createComponent(this.componentType);
+        this.component = this.fixture.componentInstance;
+        if (init) {
+          init();
+        }
+        this.fixture.detectChanges();
       }
-      this.fixture.detectChanges();
     }));
   }
 
