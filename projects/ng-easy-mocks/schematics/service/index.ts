@@ -24,7 +24,7 @@ export function myService(options: MyServiceSchema): Rule {
       options.project = workspace.defaultProject;
     }
 
-    const projectName = options.project as string;
+    const projectName = options.project;
 
     const project = workspace.projects[projectName];
 
@@ -40,7 +40,7 @@ export function myService(options: MyServiceSchema): Rule {
         dasherize: strings.dasherize,
         name: options.name
       }),
-      move(normalize(options.path as string))
+      move(normalize(options.path))
     ]);
 
     return chain([

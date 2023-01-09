@@ -1,12 +1,15 @@
-import { TestBed } from '@angular/core/testing';
-
+import { MockService, ServiceTest, ServiceTestSpec } from 'ng-easy-mocks';
 import { <%= classify(name) %>Service } from './<%= dasherize(name) %>.service';
 
+@ServiceTest(<%= classify(name) %>Service)
+class <%= classify(name) %>ServiceSpec extends ServiceTestSpec<<%= classify(name) %>Service> {
+}
+
 describe('<%= classify(name) %>Service', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  const ts = new <%= classify(name) %>ServiceSpec();
+  ts.setup();
 
   it('should be created', () => {
-    const service: <%= classify(name) %>Service = TestBed.get(<%= classify(name) %>Service);
-    expect(service).toBeTruthy();
+    expect(ts.service).toBeTruthy();
   });
 });

@@ -1,10 +1,11 @@
-import { Type, InjectionToken, InjectFlags } from '@angular/core';
+import { Type } from '@angular/core';
 import { MetadataConstants } from './metadata-constants.enum';
-import { createModuleConfig } from './mock-annotations';
+import { createModuleDef } from './create-module-def';
 import { TestBed, async } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestSpec } from './test-spec';
 
-export abstract class ServiceTestSpec<T> {
+export abstract class ServiceTestSpec<T> extends TestSpec<T> {
   service: T;
   serviceType: Type<T>;
   httpMock: HttpTestingController;
@@ -12,7 +13,7 @@ export abstract class ServiceTestSpec<T> {
   setup(init?: (this: void) => void) {
     this.serviceType = Reflect.getMetadata(MetadataConstants.ENTRY_SERVICE_TYPE_METADATA, this.constructor);
 
-    const globalModuleConfig = createModuleConfig(this);
+    const globalModuleConfig = createModuleDef(this);
 
     // @ts-ignore
     beforeEach(async(() => {
@@ -23,14 +24,7 @@ export abstract class ServiceTestSpec<T> {
         innerImports.push(HttpClientTestingModule);
       }
 
-      Object.getOwnPropertyNames(this.constructor.prototype).forEach(funcName => {
-        if (funcName.startsWith('mock')) {
-          const ret = this[funcName](null);
-          if (ret.provide) {
-            innerProviders.push(ret);
-          }
-        }
-      });
+      this.applyMockServiceFunctions(innerProviders);
 
       localModuleConfig.providers = innerProviders;
       localModuleConfig.imports = innerImports;
@@ -44,26 +38,5 @@ export abstract class ServiceTestSpec<T> {
         init();
       }
     }));
-  }
-
-  mock<ObjectType>(
-    objectType: Type<ObjectType> | InjectionToken<ObjectType>,
-    notFoundValue?: ObjectType, flags?: InjectFlags): ObjectType {
-    const serviceInstance = TestBed.get(objectType, notFoundValue, flags);
-    if (serviceInstance) {
-      try {
-        return serviceInstance.__mock__();
-      } catch (err) {
-        return undefined;
-      }
-    } else {
-      return undefined;
-    }
-  }
-
-  get<ObjectType>(
-    objectType: Type<ObjectType> | InjectionToken<ObjectType>,
-    notFoundValue?: ObjectType, flags?: InjectFlags): ObjectType {
-    return TestBed.get(objectType, notFoundValue, flags);
   }
 }

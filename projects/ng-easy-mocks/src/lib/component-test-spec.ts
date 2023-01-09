@@ -1,10 +1,11 @@
 import { TestHostComponent } from './test-host.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { Type, InjectionToken, InjectFlags, DebugElement } from '@angular/core';
+import { Type, DebugElement } from '@angular/core';
 import { MetadataConstants } from './metadata-constants.enum';
-import { createModuleConfig } from './mock-annotations';
+import { createModuleDef } from './create-module-def';
 import { By } from '@angular/platform-browser';
+import { TestSpec } from './test-spec';
 
 export interface SuperDebugElement extends DebugElement {
   readonly textContent: string;
@@ -13,7 +14,23 @@ export interface SuperDebugElement extends DebugElement {
   $all(cssSelector: string): SuperDebugElement[];
 }
 
-export abstract class ComponentTestSpec<T> {
+function enhanceDebugElement() {
+  if (!DebugElement.prototype.$) {
+    DebugElement.prototype.$ = function(...cssSelectors: string[]): SuperDebugElement {
+      return this.query(By.css(cssSelectors.join(' ')));
+    };
+
+    DebugElement.prototype.$all = function(cssSelector: string): SuperDebugElement[] {
+      return this.queryAll(By.css(cssSelector)) as SuperDebugElement[];
+    };
+
+    Object.defineProperty(
+      DebugElement.prototype,
+      'textContent',
+      { get() { return this.nativeElement.textContent; } });
+  }
+}
+export abstract class ComponentTestSpec<T> extends TestSpec<T> {
   component: T;
   parentComponent: TestHostComponent<T>;
   fixture: ComponentFixture<T> | ComponentFixture<TestHostComponent<T>>;
@@ -21,30 +38,12 @@ export abstract class ComponentTestSpec<T> {
   parentComponentType: Type<TestHostComponent<T>>;
 
   setup(init?: (this: void) => void) {
-    if (!DebugElement.prototype.$) {
-      DebugElement.prototype.$ = function(...cssSelectors: string[]): SuperDebugElement {
-        let el: DebugElement = this;
-        cssSelectors.forEach(cssSelector => {
-          if (el) {
-            el = el.query(By.css(cssSelector));
-          } else {
-            return undefined;
-          }
-        });
-        return el as SuperDebugElement;
-      };
-
-      DebugElement.prototype.$all = function(cssSelector: string): SuperDebugElement[] {
-        return this.queryAll(By.css(cssSelector)) as SuperDebugElement[];
-      };
-
-      Object.defineProperty(DebugElement.prototype, 'textContent', { get() { return this.nativeElement.textContent; }});
-    }
+    enhanceDebugElement();
 
     this.componentType = Reflect.getMetadata(MetadataConstants.ENTRY_COMPONENT_TYPE_METADATA, this.constructor);
     this.parentComponentType = Reflect.getMetadata(MetadataConstants.PARENT_COMPONENT_TYPE_METADATA, this.constructor);
 
-    const globalModuleConfig = createModuleConfig(this);
+    const globalModuleConfig = createModuleDef(this);
 
     // @ts-ignore
     beforeEach(async(() => {
@@ -55,14 +54,7 @@ export abstract class ComponentTestSpec<T> {
         innerImports.push(RouterTestingModule);
       }
 
-      Object.getOwnPropertyNames(this.constructor.prototype).forEach(funcName => {
-        if (funcName.startsWith('mock')) {
-          const ret = this[funcName](null);
-          if (ret.provide) {
-            innerProviders.push(ret);
-          }
-        }
-      });
+      this.applyMockServiceFunctions(innerProviders);
 
       localModuleConfig.providers = innerProviders;
       localModuleConfig.imports = innerImports;
@@ -86,27 +78,6 @@ export abstract class ComponentTestSpec<T> {
         this.fixture.detectChanges();
       }
     }));
-  }
-
-  mock<ObjectType>(
-    objectType: Type<ObjectType> | InjectionToken<ObjectType>,
-    notFoundValue?: ObjectType, flags?: InjectFlags): ObjectType {
-    const serviceInstance = TestBed.get(objectType, notFoundValue, flags);
-    if (serviceInstance) {
-      try {
-        return serviceInstance.__mock__();
-      } catch (err) {
-        return undefined;
-      }
-    } else {
-      return undefined;
-    }
-  }
-
-  get<ObjectType>(
-    objectType: Type<ObjectType> | InjectionToken<ObjectType>,
-    notFoundValue?: ObjectType, flags?: InjectFlags): ObjectType {
-    return TestBed.get(objectType, notFoundValue, flags);
   }
 
   $(...cssSelectors: string[]): SuperDebugElement {
