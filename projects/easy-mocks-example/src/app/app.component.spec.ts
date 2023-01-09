@@ -6,7 +6,7 @@ import { when, verify } from 'ts-mockito';
 @ComponentTest(AppComponent)
 class AppComponentSpec extends ComponentTestSpec<AppComponent> {
   @MockService(TitleService)
-  mockTitleServide(stub: TitleService) {
+  mockTitleService(stub: TitleService) {
     when(stub.genTitle()).thenReturn('hello');
   }
 }
