@@ -1,15 +1,16 @@
 {
   "name": "ng-easy-mocks",
   "engines": {
-    "node": ">=10.9 <15"
+    "node": ">=14 <19"
   },
-  "version": "8.0.0",
-  "dependencies": {
-    "ng-mocks": "^8.1.0",
-    "ts-mockito": "^2.5.0"
-  },
+  "version": "15.0.0",
   "peerDependencies": {
-    "@angular/common": "8.x",
-    "@angular/core": "8.x"
+    "@angular/common": "^15.0.0",
+    "@angular/core": "^15.0.0"
+  },
+  "dependencies": {
+    "ng-mocks": "^14.5.0",
+    "ts-mockito": "^2.6.0",
+    "tslib": "^2.3.0"
   }
 }

@@ -13,7 +13,7 @@ export function MockServices(serviceTypes: Array<Type<any>>): ClassDecorator {
     if (Reflect.hasMetadata(MetadataConstants.MOCK_SERVICES_METADATA, target)) {
       Reflect.deleteMetadata(MetadataConstants.MOCK_SERVICES_METADATA, target);
     }
-    const providers = [];
+    const providers: any[] = [];
     Reflect.defineMetadata(MetadataConstants.MOCK_SERVICES_METADATA, providers, target);
 
     serviceTypes.forEach(serviceType => {
@@ -28,7 +28,7 @@ export function MockServices(serviceTypes: Array<Type<any>>): ClassDecorator {
  * @returns a method decorator
  */
 export function MockService<T extends object>(serviceType: Type<T>): MethodDecorator {
-  return (target: any, methodName: string, descriptor: PropertyDescriptor) => { // target: constructor prototype
+  return (target: any, methodName: string | symbol, descriptor: PropertyDescriptor) => { // target: constructor prototype
     const originalMethod: (serviceType: T) => any = descriptor.value;
     const stub = createServiceStub<T>(serviceType);
     descriptor.value = function(...args: any[]) {

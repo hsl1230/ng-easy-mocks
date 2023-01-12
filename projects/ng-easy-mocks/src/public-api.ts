@@ -1,6 +1,7 @@
 /*
  * Public API Surface of ng-easy-mocks
  */
+
 export { ComponentTest } from './lib/decorators/component-test';
 export { ServiceTest } from './lib/decorators/service-test';
 export { MockComponents } from './lib/decorators/mock-components';

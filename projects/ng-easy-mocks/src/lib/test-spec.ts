@@ -1,4 +1,4 @@
-import { InjectFlags, InjectionToken, Type } from '@angular/core';
+import { InjectionToken, InjectOptions, Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { createServiceStub } from './decorators/mock-services';
 
@@ -7,7 +7,8 @@ export abstract class TestSpec<T> {
     Object.getOwnPropertyNames(this.constructor.prototype).forEach(funcName => {
       if (funcName.startsWith('mock')) {
         // tslint:disable-next-line: ban-types
-        const mockFunction: Function = this[funcName];
+        const me: any = this;
+        const mockFunction: Function = me[funcName];
         if (mockFunction instanceof Function) {
           const ret = mockFunction.apply(this, null);
           innerProviders.push(ret);
@@ -18,8 +19,8 @@ export abstract class TestSpec<T> {
 
   mock<ObjectType extends object>(
     objectType: Type<ObjectType>,
-    notFoundValue?: ObjectType, flags?: InjectFlags): ObjectType {
-    const serviceInstance = TestBed.get(objectType, notFoundValue, flags);
+    notFoundValue?: ObjectType, injectOptions?: InjectOptions): ObjectType {
+    const serviceInstance:any = TestBed.inject(objectType, notFoundValue, injectOptions);
     if (serviceInstance) {
       if (serviceInstance.__mock__ instanceof Function) {
         return serviceInstance.__mock__();
@@ -33,7 +34,7 @@ export abstract class TestSpec<T> {
 
   get<ObjectType>(
     objectType: Type<ObjectType> | InjectionToken<ObjectType>,
-    notFoundValue?: ObjectType, flags?: InjectFlags): ObjectType {
-    return TestBed.get(objectType, notFoundValue, flags);
+    notFoundValue?: ObjectType, injectOptions?: InjectOptions): ObjectType {
+    return TestBed.inject(objectType, notFoundValue, injectOptions);
   }
 }

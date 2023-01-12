@@ -1,8 +1,105 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1, 
+  "version": 1,
   "newProjectRoot": "projects",
   "projects": {
+    "tutorial-crud": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/tutorial-crud",
+      "sourceRoot": "projects/tutorial-crud/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/tutorial-crud",
+            "index": "projects/tutorial-crud/src/index.html",
+            "main": "projects/tutorial-crud/src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "projects/tutorial-crud/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/tutorial-crud/src/favicon.ico",
+              "projects/tutorial-crud/src/assets"
+            ],
+            "styles": [
+              "projects/tutorial-crud/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "tutorial-crud:build:production"
+            },
+            "development": {
+              "browserTarget": "tutorial-crud:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "tutorial-crud:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "projects/tutorial-crud/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "projects/tutorial-crud/src/favicon.ico",
+              "projects/tutorial-crud/src/assets"
+            ],
+            "styles": [
+              "projects/tutorial-crud/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        }
+      }
+    },
     "ng-easy-mocks": {
       "projectType": "library",
       "root": "projects/ng-easy-mocks",
@@ -10,159 +107,34 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "tsConfig": "projects/ng-easy-mocks/tsconfig.lib.json",
             "project": "projects/ng-easy-mocks/ng-package.json"
           },
           "configurations": {
             "production": {
               "tsConfig": "projects/ng-easy-mocks/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ng-easy-mocks/tsconfig.lib.json"
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/ng-easy-mocks/src/test.ts",
             "tsConfig": "projects/ng-easy-mocks/tsconfig.spec.json",
-            "karmaConfig": "projects/ng-easy-mocks/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/ng-easy-mocks/tsconfig.lib.json",
-              "projects/ng-easy-mocks/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
             ]
           }
         }
       }
-    },
-    "easy-mocks-example": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
-      "root": "projects/easy-mocks-example",
-      "sourceRoot": "projects/easy-mocks-example/src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/easy-mocks-example",
-            "index": "projects/easy-mocks-example/src/index.html",
-            "main": "projects/easy-mocks-example/src/main.ts",
-            "polyfills": "projects/easy-mocks-example/src/polyfills.ts",
-            "tsConfig": "projects/easy-mocks-example/tsconfig.app.json",
-            "aot": true,
-            "assets": [
-              "projects/easy-mocks-example/src/favicon.ico",
-              "projects/easy-mocks-example/src/assets"
-            ],
-            "styles": [
-              "projects/easy-mocks-example/src/styles.scss"
-            ],
-            "scripts": []
-          },
-          "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "projects/easy-mocks-example/src/environments/environment.ts",
-                  "with": "projects/easy-mocks-example/src/environments/environment.prod.ts"
-                }
-              ],
-              "optimization": true,
-              "outputHashing": "all",
-              "sourceMap": false,
-              "extractCss": true,
-              "namedChunks": false,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "6kb",
-                  "maximumError": "10kb"
-                }
-              ]
-            }
-          }
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {
-            "browserTarget": "easy-mocks-example:build"
-          },
-          "configurations": {
-            "production": {
-              "browserTarget": "easy-mocks-example:build:production"
-            }
-          }
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "easy-mocks-example:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/easy-mocks-example/src/test.ts",
-            "polyfills": "projects/easy-mocks-example/src/polyfills.ts",
-            "tsConfig": "projects/easy-mocks-example/tsconfig.spec.json",
-            "karmaConfig": "projects/easy-mocks-example/karma.conf.js",
-            "assets": [
-              "projects/easy-mocks-example/src/favicon.ico",
-              "projects/easy-mocks-example/src/assets"
-            ],
-            "styles": [
-              "projects/easy-mocks-example/src/styles.scss"
-            ],
-            "scripts": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/easy-mocks-example/tsconfig.app.json",
-              "projects/easy-mocks-example/tsconfig.spec.json",
-              "projects/easy-mocks-example/e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/easy-mocks-example/e2e/protractor.conf.js",
-            "devServerTarget": "easy-mocks-example:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "easy-mocks-example:serve:production"
-            }
-          }
-        }
-      }
-    }},
-  "defaultProject": "ng-easy-mocks"
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
 }

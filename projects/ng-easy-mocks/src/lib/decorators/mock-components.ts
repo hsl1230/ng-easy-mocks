@@ -14,7 +14,7 @@ export function MockComponents(componentTypes: Array<Type<any>>) {
     if (Reflect.hasMetadata(MetadataConstants.MOCK_COMPONENTS_METADATA, target)) {
       Reflect.deleteMetadata(MetadataConstants.MOCK_COMPONENTS_METADATA, target);
     }
-    const declarations = [];
+    const declarations: any[] = [];
     Reflect.defineMetadata(MetadataConstants.MOCK_COMPONENTS_METADATA, declarations, target);
 
     componentTypes.forEach(comp => {
