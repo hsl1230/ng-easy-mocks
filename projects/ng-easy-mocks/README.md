@@ -2,7 +2,24 @@
 
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.0.
 
+## link the lib with app
+
+- build the lib using npm run build ng-easy-mocks
+- cd dist/ng-easy-mocks
+- npm link
+- cd $root_of_angular_workspace
+- npm link ng-easy-mocks
+
+## build schematics
+
+- cd projects/ng-easy-mocks
+- npm run build
+
 ## Code scaffolding
+
+## create a component with ng-easy-mocks tests
+
+- ng g ng-easy-mocks:c component_name --project=$project_name
 
 Run `ng generate component component-name --project ng-easy-mocks` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ng-easy-mocks`.
 > Note: Don't forget to add `--project ng-easy-mocks` or else it will be added to the default project in your `angular.json` file. 
