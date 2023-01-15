@@ -1,0 +1,21 @@
+{
+  "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-add": {
+      "description": "Add ng-easy-mocks library to the project.",
+      "factory": "./ng-add/index#ngAdd"
+    },
+    "service": {
+      "aliases": ["s"],
+      "description": "Generate a http service.",
+      "factory": "./service",
+      "schema": "./service/schema.json"
+    },
+    "component": {
+      "aliases": ["c"],
+      "description": "Create a Angular component with ng-easy-mocks tests.",
+      "factory": "./component",
+      "schema": "./component/schema.json"
+    }
+  }
+}

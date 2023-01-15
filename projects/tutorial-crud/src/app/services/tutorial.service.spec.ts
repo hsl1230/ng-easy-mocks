@@ -1,6 +1,5 @@
 import { TutorialService } from './tutorial.service';
-import { ServiceTestSpec } from '../../../../ng-easy-mocks/src/lib/service-test-spec';
-import { ServiceTest } from 'ng-easy-mocks';
+import { ServiceTest, ServiceTestSpec } from 'ng-easy-mocks';
 
 import tutorials from './test-data/tutorials.json';
 

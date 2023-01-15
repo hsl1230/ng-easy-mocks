@@ -4,6 +4,14 @@
     "node": ">=14 <19"
   },
   "version": "15.0.0",
+  "scripts": {
+    "build": "tsc -p tsconfig.schematics.json",
+    "postbuild": "copyfiles schematics/*/schema.json schematics/*/files/** schematics/*/files/*/** schematics/collection.json ../../dist/ng-easy-mocks/"
+  },
+  "schematics": "./lib/schematics/collection.json",
+  "ng-add": {
+    "save": "devDependencies"
+  },
   "peerDependencies": {
     "@angular/common": "^15.0.0",
     "@angular/core": "^15.0.0"
@@ -12,5 +20,9 @@
     "ng-mocks": "^14.5.0",
     "ts-mockito": "^2.6.0",
     "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "copyfiles": "file:../../node_modules/copyfiles",
+    "typescript": "file:../../node_modules/typescript"
   }
 }
